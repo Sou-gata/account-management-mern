@@ -217,13 +217,10 @@ input::-webkit-inner-spin-button {
     font-size: 20px;
 }
 .del-btn {
-    color: #ff6565;
+    color: #ff5744;
 }
 .view-btn {
-    color: #3da58a;
-}
-.add-workers:hover {
-    background: #0b5fde;
+    color: #59ecc5;
 }
 
 .ant-table {

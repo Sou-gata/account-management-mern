@@ -46,7 +46,8 @@ const allUsers = async (req, res) => {
     try {
         const users = await User.find()
             .populate("createdBy")
-            .populate("updatedBy");
+            .populate("updatedBy")
+            .sort({ isActive: -1 });
         res.json(users);
     } catch (error) {
         res.json({ message: error.message });
@@ -55,9 +56,10 @@ const allUsers = async (req, res) => {
 
 const allActiveUsers = async (req, res) => {
     try {
-        const users = await User.find({ isActive: true })
-            .populate("createdBy")
-            .populate("updatedBy");
+        const users = await User.find({ isActive: true }).sort({ name: 1 });
+        // const users = await User.find({
+        //     $and: [{ isActive: true }, { isAdmin: { $ne: true } }],
+        // }).sort({ name: 1 });  // To exclude admin
         res.json(users);
     } catch (error) {
         res.json({ message: error.message });
@@ -83,7 +85,8 @@ const getUser = async (req, res) => {
     try {
         const user = await User.findById(id)
             .populate("createdBy")
-            .populate("updatedBy");
+            .populate("updatedBy")
+            .select("+isAdmin");
         if (user) {
             res.json(user);
         } else {
@@ -96,7 +99,7 @@ const getUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const id = req.params.id;
-    const { name, age, mobile, address, isActive, uid } = req.body;
+    const { name, age, mobile, address, isActive, uid, isAdmin } = req.body;
     try {
         const user = await User.findById(id);
         if (user) {
@@ -106,6 +109,7 @@ const updateUser = async (req, res) => {
             user.address = address || user.address;
             user.isActive = isActive;
             user.updatedBy = uid;
+            user.isAdmin = isAdmin || user.isAdmin;
             const updatedUser = await user.save();
             res.json(updatedUser);
         } else {
@@ -201,6 +205,25 @@ const changePassWord = async (req, res) => {
     } catch (error) {}
 };
 
+const verifyPassword = async (req, res) => {
+    const { id, password } = req.body;
+    try {
+        const user = await User.findById(id).select("+password");
+        if (user) {
+            const matched = bcrypt.compareSync(password, user.password);
+            if (matched) {
+                res.json({ error: false, message: "Password matched" });
+            } else {
+                res.json({ error: true, message: "Password not matched" });
+            }
+        } else {
+            res.json({ error: true, message: "Invalid user" });
+        }
+    } catch (error) {
+        res.json({ error: true, message: error.message });
+    }
+};
+
 module.exports = {
     addUser,
     allUsers,
@@ -211,4 +234,5 @@ module.exports = {
     login,
     verifyToken,
     changePassWord,
+    verifyPassword,
 };

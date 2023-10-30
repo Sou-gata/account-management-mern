@@ -55,12 +55,10 @@ const Header = () => {
     return (
         <>
             <div className="bg-[#001529] px-6 h-16 w-full flex items-center justify-between sticky top-0 right-0 z-50">
-                <Link
-                    to="/"
-                    className="text-slate-100 font-semibold text-3xl capitalize"
-                >
-                    <span className="text-[#70d8bd]">A</span>ccount{" "}
-                    <span className="text-[#70d8bd]">M</span>anager{" "}
+                <Link to="/" className="text-slate-100 font-semibold text-3xl">
+                    <span className="text-[#70d8bd]">D</span>oor{" "}
+                    <span className="text-[#70d8bd]">T</span>o{" "}
+                    <span className="text-[#70d8bd]">D</span>oor{" "}
                 </Link>
                 <ul className="flex-center gap-5">
                     {!user?.admin && (
@@ -116,7 +114,6 @@ const Header = () => {
                 open={open}
                 onOk={(e) => {
                     setOpen(false);
-                    // deleteHandler();
                 }}
                 onCancel={() => {
                     setOpen(false);

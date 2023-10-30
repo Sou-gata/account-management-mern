@@ -10,6 +10,7 @@ const {
     login,
     verifyToken,
     changePassWord,
+    verifyPassword,
 } = require("../controllers/userController");
 
 router.post("/add", addUser);
@@ -21,5 +22,6 @@ router.put("/update/:id", updateUser);
 router.post("/login", login);
 router.post("/verify", verifyToken);
 router.post("/change-password", changePassWord);
+router.post("/verify-password", verifyPassword);
 
 module.exports = router;

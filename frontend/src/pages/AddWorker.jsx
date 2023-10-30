@@ -26,7 +26,7 @@ const FormDisabledDemo = () => {
         try {
             const { data } = await axios.post(
                 "http://localhost:4000/api/user/add",
-                user
+                { ...user, id: ctx.user.id }
             );
             if (!data.error) {
                 toast("success", "Worker added successfully");

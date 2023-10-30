@@ -1,5 +1,5 @@
-import { Space, Table, Modal, Tag, Popconfirm } from "antd";
-import { BsFillTrashFill, BsInfoCircle } from "react-icons/bs";
+import { Space, Table, Modal, Tag } from "antd";
+import { BsFillTrashFill } from "react-icons/bs";
 import { AiOutlineEdit, AiOutlineUserAdd } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -23,9 +23,9 @@ const Workers = () => {
                 const { data } = await axios.get(
                     "http://localhost:4000/api/user/all"
                 );
-                let tempData = [];
+                let res = [];
                 data.forEach((element) => {
-                    tempData.push({
+                    res.push({
                         key: element._id,
                         name: element.name,
                         age: element.age,
@@ -38,8 +38,7 @@ const Workers = () => {
                         updatedBy: element?.updatedBy?.name,
                     });
                 });
-                console.log(data);
-                setUsers(tempData);
+                setUsers(res);
             } catch (error) {
                 toast("error", error.message);
             }

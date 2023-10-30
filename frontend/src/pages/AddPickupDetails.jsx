@@ -132,9 +132,10 @@ const AddPickupDetails = () => {
                                         <td className="p-2 flex justify-center">
                                             <input
                                                 type="number"
-                                                className="custom-input w-28"
+                                                className="custom-input w-28 text-center"
                                                 name={w.name}
                                                 id={w.userId}
+                                                placeholder="OFD"
                                                 onChange={(e) =>
                                                     handleChange(e, "ofd")
                                                 }
@@ -147,7 +148,8 @@ const AddPickupDetails = () => {
                                         <td className="pl-2 ">
                                             <input
                                                 type="number"
-                                                className="custom-input w-28"
+                                                className="custom-input w-28 text-center"
+                                                placeholder="OFP"
                                                 name={w.name}
                                                 id={w.userId}
                                                 onChange={(e) =>

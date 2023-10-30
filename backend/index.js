@@ -21,4 +21,4 @@ app.use("/api/pickup", require("./routers/pickupRouter"));
 app.get("*", (_, res) => {
     res.sendFile(path.resolve(__dirname, "ui", "index.html"));
 });
-// require("child_process").exec("start http://localhost:4000/");
+require("child_process").exec("start http://localhost:4000/");
