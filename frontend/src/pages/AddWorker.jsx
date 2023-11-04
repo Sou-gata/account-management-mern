@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "../utils";
 import { Context } from "../context/UserContext";
+import baseUrl from "../../baseUrl";
+import PageAnimation from "../components/PageAnimation";
 
 const FormDisabledDemo = () => {
     const navigate = useNavigate();
@@ -24,10 +26,10 @@ const FormDisabledDemo = () => {
     };
     const addData = async () => {
         try {
-            const { data } = await axios.post(
-                "http://localhost:4000/api/user/add",
-                { ...user, id: ctx.user.id }
-            );
+            const { data } = await axios.post(`${baseUrl}/api/user/add`, {
+                ...user,
+                id: ctx.user.id,
+            });
             if (!data.error) {
                 toast("success", "Worker added successfully");
                 navigate("/workers");
@@ -39,7 +41,7 @@ const FormDisabledDemo = () => {
         }
     };
     return (
-        <div className="w-full flex-center flex-col">
+        <PageAnimation className="w-full flex-center flex-col">
             <div className="h-full flex-center flex-col p-5">
                 <div className="mb-6">
                     <p className="text-3xl text-white">Add new worker</p>
@@ -109,7 +111,7 @@ const FormDisabledDemo = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </PageAnimation>
     );
 };
 export default FormDisabledDemo;

@@ -44,9 +44,7 @@ async function addAttandance(req, res) {
 
 async function getAttandance(req, res) {
     try {
-        const users = await Attandance.find()
-            .populate("createdBy")
-            .populate("updatedBy");
+        const users = await Attandance.find().populate("createdBy").populate("updatedBy");
         res.json(users);
     } catch (error) {
         res.json({ message: error.message, error: true });

@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { DatePicker } from "antd";
+import { DatePicker, Select } from "antd";
 import toast, { dateToString } from "../utils";
+import baseUrl from "../../baseUrl";
+import PageAnimation from "../components/PageAnimation";
 
 const ViewCashRecord = () => {
     let today = new Date();
-    const [date, setDate] = useState([
-        new Date(today.getFullYear(), today.getMonth(), 1),
-        today,
-    ]);
+    const [date, setDate] = useState([new Date(today.getFullYear(), today.getMonth(), 1), today]);
     const [data, setData] = useState([]);
+    const [type, setType] = useState("active");
     const onChangeDate = (value) => {
         if (!value) {
             return;
@@ -86,14 +86,9 @@ const ViewCashRecord = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let res = await axios.post(
-                    "http://localhost:4000/api/pickup/get-delivery",
-                    { date }
-                );
+                let res = await axios.post(`${baseUrl}/api/pickup/get-delivery`, { date, type });
                 res = res.data;
-                let user = await axios.get(
-                    "http://localhost:4000/api/user/all"
-                );
+                let user = await axios.get(`${baseUrl}/api/user/all?type=${type}`);
                 user = user.data;
                 calculateData(res, user);
             } catch (error) {
@@ -101,12 +96,13 @@ const ViewCashRecord = () => {
             }
         };
         fetchData();
-    }, [date]);
+    }, [date, type]);
+    const handleSelect = (value) => {
+        setType(value);
+    };
     return (
-        <div className="flex flex-col w-full h-[100vh] items-center mt-5 relative">
-            <h1 className="text-slate-100 text-3xl font-semibold">
-                Cash Record
-            </h1>
+        <PageAnimation className="flex flex-col w-full items-center mt-5 relative">
+            <h1 className="text-slate-100 text-3xl font-semibold">Cash Record</h1>
             <div className="w-full text-slate-100 py-10 px-5 rounded-lg">
                 <div className="flex-center gap-3 mb-5">
                     <p>Select Date: </p>
@@ -118,39 +114,27 @@ const ViewCashRecord = () => {
                         {dateToString(date[0])} - {dateToString(date[1])}
                     </p>
                 </div>
+                <div className="flex-center gap-5 mb-5">
+                    <p className="text-lg mr-2">Select Type: </p>
+                    <Select size="large" value={type} className="w-28" onChange={handleSelect}>
+                        <Select.Option value="all">All</Select.Option>
+                        <Select.Option value="active">Active</Select.Option>
+                        <Select.Option value="deactive">Deactive</Select.Option>
+                    </Select>
+                </div>
                 <table className="w-full stripped-table divide-gray-200 shadow-lg bg-[#1f2a40] rounded-lg overflow-hidden">
                     <thead>
                         <tr className="w-full bg-[#2e7c67]">
-                            <td className="w-[20%] text-center py-2 font-semibold">
-                                Name
-                            </td>
-                            <td className="w-[8.8%] text-center py-2 font-semibold">
-                                OFD
-                            </td>
-                            <td className="w-[8.8%] text-center py-2 font-semibold">
-                                Delivered
-                            </td>
-                            <td className="w-[8.8%] text-center py-2 font-semibold">
-                                OFP
-                            </td>
-                            <td className="w-[8.8%] text-center py-2 font-semibold">
-                                Pickup
-                            </td>
-                            <td className="w-[8.8%] text-center py-2 font-semibold">
-                                Cost
-                            </td>
-                            <td className="w-[8.8%] text-center py-2 font-semibold">
-                                Cash
-                            </td>
-                            <td className="w-[8.8%] text-center py-2 font-semibold">
-                                Online
-                            </td>
-                            <td className="w-[8.8%] text-center py-2 font-semibold">
-                                Total
-                            </td>
-                            <td className="w-[8.8%] text-center py-2 font-semibold">
-                                Due
-                            </td>
+                            <td className="w-[20%] text-center py-2 font-semibold">Name</td>
+                            <td className="w-[8.8%] text-center py-2 font-semibold">OFD</td>
+                            <td className="w-[8.8%] text-center py-2 font-semibold">Delivered</td>
+                            <td className="w-[8.8%] text-center py-2 font-semibold">OFP</td>
+                            <td className="w-[8.8%] text-center py-2 font-semibold">Pickup</td>
+                            <td className="w-[8.8%] text-center py-2 font-semibold">Cost</td>
+                            <td className="w-[8.8%] text-center py-2 font-semibold">Cash</td>
+                            <td className="w-[8.8%] text-center py-2 font-semibold">Online</td>
+                            <td className="w-[8.8%] text-center py-2 font-semibold">Total</td>
+                            <td className="w-[8.8%] text-center py-2 font-semibold">Due</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -158,9 +142,7 @@ const ViewCashRecord = () => {
                             data.map((item, i) => (
                                 <tr
                                     key={i}
-                                    className={`w-full ${
-                                        i == data.length - 1 ? "border-y-2" : ""
-                                    }`}
+                                    className={`w-full ${i == data.length - 1 ? "border-y-2" : ""}`}
                                 >
                                     <td className="w-[20%] text-center text-lg py-2">
                                         {item.name}
@@ -197,7 +179,7 @@ const ViewCashRecord = () => {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </PageAnimation>
     );
 };
 

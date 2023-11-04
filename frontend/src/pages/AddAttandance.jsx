@@ -3,6 +3,8 @@ import axios from "axios";
 import { Table, DatePicker } from "antd";
 import toast, { dateToString } from "../utils";
 import { Context } from "../context/UserContext";
+import baseUrl from "../../baseUrl";
+import PageAnimation from "../components/PageAnimation";
 
 const AddAttandance = () => {
     const [users, setUsers] = useState([]);
@@ -11,24 +13,41 @@ const AddAttandance = () => {
     useEffect(() => {
         const getUsers = async () => {
             try {
-                const { data } = await axios.get(
-                    "http://localhost:4000/api/user/active"
-                );
+                const { data } = await axios.get(`${baseUrl}/api/user/active`);
+                let attandance = await axios.post(`${baseUrl}/api/attandance/day`, { date });
+                attandance = attandance.data;
                 let tempData = [];
-                data.forEach((element) => {
-                    tempData.push({
-                        key: element._id,
-                        name: element.name,
-                        isPresent: false,
+                if (attandance.users) {
+                    data.forEach((element) => {
+                        let isPresent = false;
+                        for (let i = 0; i < attandance.users.length; i++) {
+                            if (attandance.users[i].userId === element._id) {
+                                isPresent = true;
+                                break;
+                            }
+                        }
+                        tempData.push({
+                            key: element._id,
+                            name: element.name,
+                            isPresent,
+                        });
                     });
-                });
+                } else {
+                    data.forEach((element) => {
+                        tempData.push({
+                            key: element._id,
+                            name: element.name,
+                            isPresent: false,
+                        });
+                    });
+                }
                 setUsers(tempData);
             } catch (error) {
                 toast("error", error.message);
             }
         };
         getUsers();
-    }, []);
+    }, [date]);
 
     const handlePresent = (e) => {
         let tempUsers = [...users];
@@ -50,10 +69,11 @@ const AddAttandance = () => {
             toast("error", "You are not authorized to add attandance");
         } else {
             try {
-                const { data } = await axios.post(
-                    "http://localhost:4000/api/attandance/add",
-                    { users, date, id: user.id }
-                );
+                const { data } = await axios.post(`${baseUrl}/api/attandance/add`, {
+                    users,
+                    date,
+                    id: user.id,
+                });
                 if (!data.error) {
                     toast("success", "Attandance added successfully");
                 } else {
@@ -80,6 +100,7 @@ const AddAttandance = () => {
                         className="cursor-pointer"
                         type="checkbox"
                         id={record.key}
+                        checked={record.isPresent}
                         onChange={handlePresent}
                     />
                 </div>
@@ -88,34 +109,23 @@ const AddAttandance = () => {
     ];
 
     return (
-        <div className="flex flex-col  w-full  items-center justify-center">
-            <h1 className="text-slate-100 text-3xl font-semibold my-5">
-                Add Attandance
-            </h1>
+        <PageAnimation className="flex flex-col  w-full  items-center justify-center">
+            <h1 className="text-slate-100 text-3xl font-semibold my-5">Add Attandance</h1>
             <div className="p-7 bg-[#1f2a40] rounded-lg shadow-lg">
                 <div className="flex-center gap-3 mb-5">
                     <p className="text-white">Select Date: </p>
                     <DatePicker onChange={onChangeDate} />
                 </div>
                 <div className="mb-5 flex items-center justify-center">
-                    <p className="text-lg mr-2 text-slate-100">
-                        The selected date is :
-                    </p>
-                    <p className="text-lg font-semibold text-[#70d8bd]">
-                        {dateToString(date)}
-                    </p>
+                    <p className="text-lg mr-2 text-slate-100">The selected date is :</p>
+                    <p className="text-lg font-semibold text-[#70d8bd]">{dateToString(date)}</p>
                 </div>
-                <Table
-                    bordered
-                    pagination={false}
-                    columns={columns}
-                    dataSource={users}
-                />
+                <Table bordered pagination={false} columns={columns} dataSource={users} />
                 <button onClick={handleSubmit} className="mt-5 custom-button">
                     Save
                 </button>
             </div>
-        </div>
+        </PageAnimation>
     );
 };
 

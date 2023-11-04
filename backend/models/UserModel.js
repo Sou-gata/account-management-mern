@@ -11,8 +11,7 @@ const userSchema = new mongoose.Schema(
         password: {
             type: String,
             required: false,
-            default:
-                "$2b$10$phVXWREpUdpP/YTwesIxNujwmoxHAAmVGvFHc5eNLR43Mv34qS3a.", //12345678
+            default: "$2b$10$phVXWREpUdpP/YTwesIxNujwmoxHAAmVGvFHc5eNLR43Mv34qS3a.", //12345678
             select: false,
         },
         createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

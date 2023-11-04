@@ -34,6 +34,7 @@ export const dateToString = (date) => {
     let year = d.getFullYear();
     let month = d.getMonth() + 1;
     let day = d.getDate();
+    if (isNaN(year)) return "";
     return `${pad(day)}/${pad(month)}/${year}`;
 };
 
@@ -53,7 +54,6 @@ export const dateToTimeString = (date) => {
     if (hour == 0) {
         hour = 12;
     }
-    return `${pad(day)}/${pad(month)}/${year}  ${pad(hour)}:${pad(
-        minute
-    )} ${meridian}`;
+    if (isNaN(year)) return "";
+    return `${pad(day)}/${pad(month)}/${year}  ${pad(hour)}:${pad(minute)} ${meridian}`;
 };

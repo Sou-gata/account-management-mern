@@ -1,4 +1,4 @@
-import { Space, Table, Modal, Tag } from "antd";
+import { Table, Modal, Tag } from "antd";
 import { BsFillTrashFill } from "react-icons/bs";
 import { AiOutlineEdit, AiOutlineUserAdd } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,6 +7,8 @@ import { useEffect, useState, useContext } from "react";
 import toast from "../utils";
 import { Context } from "../context/UserContext";
 import Popup from "../components/Popup";
+import baseUrl from "../../baseUrl";
+import PageAnimation from "../components/PageAnimation";
 
 const Workers = () => {
     const navigate = useNavigate();
@@ -20,9 +22,7 @@ const Workers = () => {
     useEffect(() => {
         const getUsers = async () => {
             try {
-                const { data } = await axios.get(
-                    "http://localhost:4000/api/user/all"
-                );
+                const { data } = await axios.get(`${baseUrl}/api/user/all`);
                 let res = [];
                 data.forEach((element) => {
                     res.push({
@@ -55,9 +55,7 @@ const Workers = () => {
             return;
         }
         try {
-            const { data } = await axios.delete(
-                `http://localhost:4000/api/user/delete/${id}`
-            );
+            const { data } = await axios.delete(`${baseUrl}/api/user/delete/${id}`);
             if (!data.error) {
                 toast("success", "Worker deleted successfully");
             } else {
@@ -110,7 +108,7 @@ const Workers = () => {
             title: "Action",
             key: "action",
             render: (_, record) => (
-                <Space size="middle">
+                <div className="flex gap-3">
                     <button
                         onClick={() => {
                             editHandler(record.key);
@@ -128,13 +126,13 @@ const Workers = () => {
                     >
                         <BsFillTrashFill />
                     </button>
-                </Space>
+                </div>
             ),
         },
     ];
 
     return (
-        <div className="workers">
+        <PageAnimation className="workers">
             {user?.admin && (
                 <div>
                     <Link to="add" className="custom-button flex-center gap-3">
@@ -144,12 +142,7 @@ const Workers = () => {
                 </div>
             )}
             <div>
-                <Table
-                    bordered
-                    pagination={false}
-                    columns={columns}
-                    dataSource={users}
-                />
+                <Table bordered pagination={false} columns={columns} dataSource={users} />
             </div>
             <Modal
                 title="Confirmation"
@@ -170,11 +163,9 @@ const Workers = () => {
                     },
                 }}
             >
-                <p className="text-slate-100 text-xl">
-                    Are you sure you want to delete ?
-                </p>
+                <p className="text-slate-100 text-xl">Are you sure you want to delete ?</p>
             </Modal>
-        </div>
+        </PageAnimation>
     );
 };
 export default Workers;

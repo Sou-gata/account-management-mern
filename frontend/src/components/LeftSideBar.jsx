@@ -34,6 +34,7 @@ const items = [
         getItem("Pickup Details", "41"),
         getItem("Delivery Details", "42"),
         getItem("Show Record", "43"),
+        getItem("Show Individual Record", "45"),
         getItem("Cash Record", "44"),
     ]),
 ];
@@ -73,6 +74,10 @@ const LeftSideBar = () => {
             setSelcted("43");
         } else if (pathname === "/parcel/cash") {
             setSelcted("44");
+        } else if (pathname === "/parcel/view-individual") {
+            setSelcted("45");
+        } else {
+            setSelcted(null);
         }
     }, [pathname]);
     const onClick = (e) => {
@@ -96,6 +101,8 @@ const LeftSideBar = () => {
             navigate("/parcel/view");
         } else if (e.key === "44") {
             navigate("/parcel/cash");
+        } else if (e.key === "45") {
+            navigate("/parcel/view-individual");
         }
     };
     return (

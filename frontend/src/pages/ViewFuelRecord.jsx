@@ -3,13 +3,12 @@ import { useState, useEffect } from "react";
 import { DatePicker, Modal } from "antd";
 import toast, { dateToString } from "../utils";
 import Popup from "../components/Popup";
+import baseUrl from "../../baseUrl";
+import PageAnimation from "../components/PageAnimation";
 
 const ViewFuelRecord = () => {
     let today = new Date();
-    const [date, setDate] = useState([
-        new Date(today.getFullYear(), today.getMonth(), 1),
-        today,
-    ]);
+    const [date, setDate] = useState([new Date(today.getFullYear(), today.getMonth(), 1), today]);
     const [data, setData] = useState([]);
     const [details, setDetails] = useState([]);
     const [rate, setRate] = useState(12);
@@ -33,7 +32,7 @@ const ViewFuelRecord = () => {
 
     const fetchData = async () => {
         try {
-            let data = await axios.post("http://localhost:4000/api/fuel/view", {
+            let data = await axios.post(`${baseUrl}/api/fuel/view`, {
                 date,
             });
             data = data.data;
@@ -70,8 +69,7 @@ const ViewFuelRecord = () => {
             for (let j = 0; j < data.length; j++) {
                 for (let k = 0; k < data[j].users.length; k++) {
                     if (users[i].id === data[j].users[k].userId) {
-                        users[i].total +=
-                            data[j].users[k].end - data[j].users[k].start;
+                        users[i].total += data[j].users[k].end - data[j].users[k].start;
                     }
                 }
             }
@@ -80,13 +78,10 @@ const ViewFuelRecord = () => {
     };
 
     return (
-        <div>
+        <PageAnimation>
             <div className="flex-center flex-col bg-[#141b2d] gap-5 sticky -top-12 left-0">
                 <div className="flex-center gap-5 mt-5">
-                    <DatePicker.RangePicker
-                        className=""
-                        onChange={onChangeDate}
-                    />
+                    <DatePicker.RangePicker className="" onChange={onChangeDate} />
                     <div>
                         <button className="custom-button" onClick={showModal}>
                             Show details
@@ -94,9 +89,7 @@ const ViewFuelRecord = () => {
                     </div>
                 </div>
                 <div className=" flex items-center justify-center">
-                    <p className="text-lg mr-2 text-slate-100">
-                        The selected date is :
-                    </p>
+                    <p className="text-lg mr-2 text-slate-100">The selected date is :</p>
                     <p className="text-lg font-semibold text-[#70d8bd]">
                         {dateToString(date[0])} - {dateToString(date[1])}
                     </p>
@@ -104,15 +97,9 @@ const ViewFuelRecord = () => {
                 <table className="w-full stripped-table">
                     <tbody>
                         <tr className="text-slate-100">
-                            <td className="w-1/2 py-1 text-center font-semibold">
-                                Name
-                            </td>
-                            <td className="w-[16.66%] py-1 text-center font-semibold">
-                                Start
-                            </td>
-                            <td className="w-[16.66%] py-1 text-center font-semibold">
-                                End
-                            </td>
+                            <td className="w-1/2 py-1 text-center font-semibold">Name</td>
+                            <td className="w-[16.66%] py-1 text-center font-semibold">Start</td>
+                            <td className="w-[16.66%] py-1 text-center font-semibold">End</td>
                             <td className="w-[16.66%] py-1 text-center font-semibold">
                                 Total journy
                             </td>
@@ -135,13 +122,8 @@ const ViewFuelRecord = () => {
                             <table className="w-full stripped-table">
                                 <tbody>
                                     {item.users.map((user) => (
-                                        <tr
-                                            className="text-slate-100"
-                                            key={user._id}
-                                        >
-                                            <td className="w-1/2 py-1 text-center">
-                                                {user.name}
-                                            </td>
+                                        <tr className="text-slate-100" key={user._id}>
+                                            <td className="w-1/2 py-1 text-center">{user.name}</td>
                                             <td className="w-[16.66%] py-1 text-center">
                                                 {user.start}
                                             </td>
@@ -159,12 +141,7 @@ const ViewFuelRecord = () => {
                     </div>
                 ))}
             </div>
-            <Modal
-                open={open}
-                title="Details"
-                onCancel={handleCancel}
-                footer={null}
-            >
+            <Modal open={open} title="Details" onCancel={handleCancel} footer={null}>
                 <div>
                     <div className="flex-center gap-2 text-slate-100">
                         <p className="text-lg">Enter rate for per km</p>
@@ -176,10 +153,7 @@ const ViewFuelRecord = () => {
                             onChange={(e) => setRate(e.target.value)}
                         />
                         <div>
-                            <button
-                                onClick={() => calculateTotal()}
-                                className="custom-button"
-                            >
+                            <button onClick={() => calculateTotal()} className="custom-button">
                                 Set
                             </button>
                         </div>
@@ -187,9 +161,7 @@ const ViewFuelRecord = () => {
                     <table className="w-full stripped-table text-slate-100 mt-4 border-[1px] border-[#94e2cd]">
                         <tbody>
                             <tr>
-                                <td className="w-1/2 py-2 text-center font-semibold">
-                                    Name
-                                </td>
+                                <td className="w-1/2 py-2 text-center font-semibold">Name</td>
                                 <td className="w-1/4 py-2 text-center font-semibold">
                                     Total journy
                                 </td>
@@ -199,17 +171,11 @@ const ViewFuelRecord = () => {
                             </tr>
                             {details.map((user) => (
                                 <tr key={user.userId}>
-                                    <td className="w-1/4 text-center py-2">
-                                        {user.name}
-                                    </td>
-                                    <td className="w-1/4 text-center py-2">
-                                        {user.total}
-                                    </td>
+                                    <td className="w-1/4 text-center py-2">{user.name}</td>
+                                    <td className="w-1/4 text-center py-2">{user.total}</td>
                                     <td className="w-1/4 text-center py-2">
                                         {user.total *
-                                            (isNaN(parseFloat(rate))
-                                                ? 0
-                                                : parseFloat(rate))}
+                                            (isNaN(parseFloat(rate)) ? 0 : parseFloat(rate))}
                                     </td>
                                 </tr>
                             ))}
@@ -217,7 +183,7 @@ const ViewFuelRecord = () => {
                     </table>
                 </div>
             </Modal>
-        </div>
+        </PageAnimation>
     );
 };
 

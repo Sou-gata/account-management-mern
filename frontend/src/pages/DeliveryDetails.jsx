@@ -3,12 +3,38 @@ import axios from "axios";
 import { DatePicker } from "antd";
 import toast, { dateToString } from "../utils";
 import { Context } from "../context/UserContext";
+import baseUrl from "../../baseUrl";
+import PageAnimation from "../components/PageAnimation";
 
 const DeliveryDetails = () => {
     const [date, setDate] = useState(new Date());
     const [pickup, setPickup] = useState({});
     const [workerData, setWorkerData] = useState({});
     const { user } = useContext(Context);
+
+    const updateData = async (day) => {
+        try {
+            let res = await axios.post(`${baseUrl}/api/pickup/get-delivery`, {
+                date: [day, day],
+            });
+            if (res.data.length > 0) {
+                let tempData = {};
+                for (let i = 0; i < res.data[0].users.length; i++) {
+                    tempData[res.data[0].users[i].name] = {
+                        id: res.data[0].users[i].userId,
+                        delivered: res.data[0].users[i].delivered,
+                        pickup: res.data[0].users[i].pickup,
+                        cost: res.data[0].users[i].cost,
+                        cash: res.data[0].users[i].cash,
+                        online: res.data[0].users[i].online,
+                    };
+                }
+                setWorkerData(tempData);
+            } else {
+                setWorkerData({});
+            }
+        } catch (error) {}
+    };
     const onChangeDate = (date) => {
         setDate(date?.$d ? date.$d : "");
         setWorkerData({});
@@ -16,11 +42,9 @@ const DeliveryDetails = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let data = await axios.post(
-                    "http://localhost:4000/api/pickup/get-pickup",
-                    { date }
-                );
+                let data = await axios.post(`${baseUrl}/api/pickup/get-pickup`, { date });
                 setPickup(data.data);
+                updateData(date);
             } catch (error) {
                 toast("error", error.message);
             }
@@ -56,16 +80,16 @@ const DeliveryDetails = () => {
         const objKeys = Object.keys(workerData);
         let tempData = [];
         for (let i = 0; i < objKeys.length; i++) {
-            let delivered = workerData[objKeys[i]].delivered || 0;
-            let pickedup = workerData[objKeys[i]].pickup || 0;
-            let cost = workerData[objKeys[i]].cost || 0;
-            let cash = workerData[objKeys[i]].cash || 0;
-            let online = workerData[objKeys[i]].online || 0;
+            let delivered = workerData[objKeys[i]].delivered || "0";
+            let pickedup = workerData[objKeys[i]].pickup || "0";
+            let cost = workerData[objKeys[i]].cost || "0";
+            let cash = workerData[objKeys[i]].cash || "0";
+            let online = workerData[objKeys[i]].online || "0";
             let ofd, ofp;
             for (let j = 0; j < pickup?.users.length; j++) {
                 if (pickup?.users[j].name === objKeys[i]) {
-                    ofd = pickup?.users[j].ofd || 0;
-                    ofp = pickup?.users[j].ofp || 0;
+                    ofd = pickup?.users[j].ofd || "0";
+                    ofp = pickup?.users[j].ofp || "0";
                     break;
                 }
             }
@@ -88,12 +112,10 @@ const DeliveryDetails = () => {
             uid: user.id,
         };
         try {
-            let data = await axios.post(
-                "http://localhost:4000/api/pickup/add-delivery",
-                dataOfDate
-            );
+            let data = await axios.post(`${baseUrl}/api/pickup/add-delivery`, dataOfDate);
             data = data.data;
             if (!data.error) {
+                setWorkerData({});
                 toast("success", "Data added successfully");
             } else {
                 toast("error", data.message);
@@ -104,7 +126,7 @@ const DeliveryDetails = () => {
     };
 
     return (
-        <div className="flex flex-col text-slate-100 w-full items-center justify-center">
+        <PageAnimation className="flex flex-col text-slate-100 w-full items-center justify-center">
             <div className="p-7 rounded-lg ">
                 <div className="flex-center gap-3 mb-5">
                     <p>Select Date: </p>
@@ -112,64 +134,37 @@ const DeliveryDetails = () => {
                 </div>
                 <div className="mb-5 flex items-center justify-center">
                     <p className="text-lg mr-2">The selected date is :</p>
-                    <p className="text-lg font-semibold text-[#70d8bd]">
-                        {dateToString(date)}
-                    </p>
+                    <p className="text-lg font-semibold text-[#70d8bd]">{dateToString(date)}</p>
                 </div>
                 <div className="flex-center flex-col">
                     <table className="w-full">
                         <thead>
                             <tr>
-                                <th
-                                    rowSpan={2}
-                                    className="border border-gray-400 px-4 py-2"
-                                >
+                                <th rowSpan={2} className="border border-gray-400 px-4 py-2">
                                     Name
                                 </th>
-                                <th
-                                    rowSpan={2}
-                                    className="border border-gray-400 px-4 py-2"
-                                >
+                                <th rowSpan={2} className="border border-gray-400 px-4 py-2">
                                     OFD
                                 </th>
-                                <th
-                                    rowSpan={2}
-                                    className="border border-gray-400 px-4 py-2"
-                                >
+                                <th rowSpan={2} className="border border-gray-400 px-4 py-2">
                                     Delivered
                                 </th>
-                                <th
-                                    rowSpan={2}
-                                    className="border border-gray-400 px-4 py-2"
-                                >
+                                <th rowSpan={2} className="border border-gray-400 px-4 py-2">
                                     OFP
                                 </th>
-                                <th
-                                    rowSpan={2}
-                                    className="border border-gray-400 px-4 py-2"
-                                >
+                                <th rowSpan={2} className="border border-gray-400 px-4 py-2">
                                     Pickup
                                 </th>
-                                <th
-                                    rowSpan={2}
-                                    className="border border-gray-400 px-4 py-2"
-                                >
+                                <th rowSpan={2} className="border border-gray-400 px-4 py-2">
                                     Cost
                                 </th>
-                                <th
-                                    colSpan={2}
-                                    className="border border-gray-400 px-4 py-2"
-                                >
+                                <th colSpan={2} className="border border-gray-400 px-4 py-2">
                                     Payment
                                 </th>
                             </tr>
                             <tr>
-                                <th className="border border-gray-400 px-4 py-2">
-                                    Cash
-                                </th>
-                                <th className="border border-gray-400 px-4 py-2">
-                                    Online
-                                </th>
+                                <th className="border border-gray-400 px-4 py-2">Cash</th>
+                                <th className="border border-gray-400 px-4 py-2">Online</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -187,13 +182,8 @@ const DeliveryDetails = () => {
                                             type="number"
                                             className="custom-input w-[100px]"
                                             id={item.userId}
-                                            onChange={(e) =>
-                                                handleChange(e, "delivered")
-                                            }
-                                            value={
-                                                workerData[item.name]
-                                                    ?.delivered || ""
-                                            }
+                                            onChange={(e) => handleChange(e, "delivered")}
+                                            value={workerData[item.name]?.delivered || ""}
                                         />
                                     </td>
                                     <td className="border border-gray-400 px-4 py-2 text-center">
@@ -205,13 +195,8 @@ const DeliveryDetails = () => {
                                             type="number"
                                             className="custom-input w-[100px]"
                                             id={item.userId}
-                                            onChange={(e) =>
-                                                handleChange(e, "pickup")
-                                            }
-                                            value={
-                                                workerData[item.name]?.pickup ||
-                                                ""
-                                            }
+                                            onChange={(e) => handleChange(e, "pickup")}
+                                            value={workerData[item.name]?.pickup || ""}
                                         />
                                     </td>
                                     <td className="border border-gray-400 px-4 py-2">
@@ -219,13 +204,8 @@ const DeliveryDetails = () => {
                                             type="number"
                                             name={item.name}
                                             className="custom-input w-[100px]"
-                                            onChange={(e) =>
-                                                handleChange(e, "cost")
-                                            }
-                                            value={
-                                                workerData[item.name]?.cost ||
-                                                ""
-                                            }
+                                            onChange={(e) => handleChange(e, "cost")}
+                                            value={workerData[item.name]?.cost || ""}
                                         />
                                     </td>
                                     <td className="border border-gray-400 px-4 py-2">
@@ -233,13 +213,8 @@ const DeliveryDetails = () => {
                                             type="number"
                                             name={item.name}
                                             className="custom-input w-[100px]"
-                                            onChange={(e) =>
-                                                handleChange(e, "cash")
-                                            }
-                                            value={
-                                                workerData[item.name]?.cash ||
-                                                ""
-                                            }
+                                            onChange={(e) => handleChange(e, "cash")}
+                                            value={workerData[item.name]?.cash || ""}
                                         />
                                     </td>
                                     <td className="border border-gray-400 px-4 py-2">
@@ -247,13 +222,8 @@ const DeliveryDetails = () => {
                                             type="number"
                                             name={item.name}
                                             className="custom-input w-[100px]"
-                                            onChange={(e) =>
-                                                handleChange(e, "online")
-                                            }
-                                            value={
-                                                workerData[item.name]?.online ||
-                                                ""
-                                            }
+                                            onChange={(e) => handleChange(e, "online")}
+                                            value={workerData[item.name]?.online || ""}
                                         />
                                     </td>
                                 </tr>
@@ -261,16 +231,13 @@ const DeliveryDetails = () => {
                         </tbody>
                     </table>
                     <div>
-                        <button
-                            onClick={() => handleSave()}
-                            className="custom-button mt-5"
-                        >
+                        <button onClick={() => handleSave()} className="custom-button mt-5">
                             Save
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </PageAnimation>
     );
 };
 

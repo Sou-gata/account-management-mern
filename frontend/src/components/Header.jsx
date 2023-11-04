@@ -4,6 +4,7 @@ import { Modal, Dropdown } from "antd";
 import axios from "axios";
 import toast from "../utils";
 import { Link } from "react-router-dom";
+import baseUrl from "../../baseUrl";
 
 const Header = () => {
     const { user, setUser } = useContext(Context);
@@ -20,7 +21,7 @@ const Header = () => {
     const login = async () => {
         try {
             const { data } = await axios.post(
-                "http://localhost:4000/api/user/login",
+                `${baseUrl}/api/user/login`,
                 details
             );
             if (!data.error) {

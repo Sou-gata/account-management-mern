@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-// const { dateToString } = require("../utils");
 
 const attandanceSchema = new mongoose.Schema(
     {

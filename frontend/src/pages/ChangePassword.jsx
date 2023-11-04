@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Context } from "../context/UserContext";
 import axios from "axios";
 import toast from "../utils";
+import baseUrl from "../../baseUrl";
+import PageAnimation from "../components/PageAnimation";
 
 const ChangePassword = () => {
     const ctx = useContext(Context);
@@ -24,24 +26,18 @@ const ChangePassword = () => {
                 return;
             }
             if (pass.newPass !== pass.confirm) {
-                toast(
-                    "error",
-                    "New password and confirm password must be same"
-                );
+                toast("error", "New password and confirm password must be same");
                 return;
             }
             if (pass.newPass.length < 8 || pass.current == "") {
                 toast("error", "Password must be atleast 8 characters long");
                 return;
             }
-            const { data } = await axios.post(
-                `http://localhost:4000/api/user/change-password`,
-                {
-                    currentPassword: pass.current,
-                    newPassword: pass.newPass,
-                    id: ctx.user.id,
-                }
-            );
+            const { data } = await axios.post(`${baseUrl}/api/user/change-password`, {
+                currentPassword: pass.current,
+                newPassword: pass.newPass,
+                id: ctx.user.id,
+            });
             if (!data.error) {
                 toast("success", "Password changed successfully");
                 setPass({
@@ -57,10 +53,8 @@ const ChangePassword = () => {
         }
     };
     return (
-        <div className="w-full flex-center flex-col">
-            <h1 className="text-slate-100 text-3xl font-semibold my-5">
-                Change Password
-            </h1>
+        <PageAnimation className="w-full flex-center flex-col">
+            <h1 className="text-slate-100 text-3xl font-semibold my-5">Change Password</h1>
             <div className="px-5 py-9 bg-[#1f2a40] rounded-xl">
                 <table className="text-slate-100">
                     <tbody>
@@ -125,7 +119,7 @@ const ChangePassword = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </PageAnimation>
     );
 };
 

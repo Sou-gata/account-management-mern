@@ -5,6 +5,7 @@ import Dashboard from "../pages/Dashboard";
 import { Context } from "../context/UserContext";
 import { useEffect, useContext } from "react";
 import axios from "axios";
+import baseUrl from "../../baseUrl";
 import Header from "./Header";
 
 const Layout = () => {
@@ -14,10 +15,9 @@ const Layout = () => {
         (async () => {
             let token = localStorage.getItem("token");
             if (token) {
-                let verify = await axios.post(
-                    "http://localhost:4000/api/user/verify",
-                    { token }
-                );
+                let verify = await axios.post(`${baseUrl}/api/user/verify`, {
+                    token,
+                });
                 verify = verify.data;
                 if (!verify.error) {
                     setUser({

@@ -43,11 +43,23 @@ const addUser = async (req, res) => {
 };
 
 const allUsers = async (req, res) => {
+    let type = req.query?.type;
+    if (!type) type = "all";
+    let users;
     try {
-        const users = await User.find()
-            .populate("createdBy")
-            .populate("updatedBy")
-            .sort({ isActive: -1 });
+        if (type == "all") {
+            users = await User.find()
+                .populate("createdBy")
+                .populate("updatedBy")
+                .sort({ isActive: -1 })
+                .sort({ name: 1 });
+        } else {
+            let active = type === "active" ? true : false;
+            users = await User.find({ isActive: active })
+                .populate("createdBy")
+                .populate("updatedBy")
+                .sort({ name: 1 });
+        }
         res.json(users);
     } catch (error) {
         res.json({ message: error.message });
@@ -123,9 +135,7 @@ const updateUser = async (req, res) => {
 const login = async (req, res) => {
     const { mobile, password } = req.body;
     try {
-        let user = await User.findOne({ mobile: mobile })
-            .select("+password")
-            .select("+isAdmin");
+        let user = await User.findOne({ mobile: mobile }).select("+password").select("+isAdmin");
         if (user) {
             const matched = bcrypt.compareSync(password, user.password);
             if (matched) {
@@ -161,9 +171,7 @@ const verifyToken = async (req, res) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         if (decoded.mobile) {
-            let user = await User.findOne({ mobile: decoded.mobile }).select(
-                "+isAdmin"
-            );
+            let user = await User.findOne({ mobile: decoded.mobile }).select("+isAdmin");
             if (user) {
                 res.json({
                     id: user._id,

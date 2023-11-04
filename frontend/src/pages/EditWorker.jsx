@@ -4,6 +4,8 @@ import axios from "axios";
 import { Modal } from "antd";
 import toast from "../utils";
 import { Context } from "../context/UserContext";
+import baseUrl from "../../baseUrl";
+import PageAnimation from "../components/PageAnimation";
 
 const EditWorker = () => {
     const { id } = useParams();
@@ -26,9 +28,7 @@ const EditWorker = () => {
         } else {
             const getWorker = async () => {
                 try {
-                    const { data } = await axios.get(
-                        `http://localhost:4000/api/user/get/${id}`
-                    );
+                    const { data } = await axios.get(`${baseUrl}/api/user/get/${id}`);
                     setUser(data);
                     setOriginalUser(data);
                 } catch (error) {
@@ -43,10 +43,10 @@ const EditWorker = () => {
     };
     const submitData = async () => {
         try {
-            const { data } = await axios.put(
-                `http://localhost:4000/api/user/update/${id}`,
-                { ...user, uid: ctx.user.id }
-            );
+            const { data } = await axios.put(`${baseUrl}/api/user/update/${id}`, {
+                ...user,
+                uid: ctx.user.id,
+            });
             if (!data.error) {
                 toast("success", "Data updated successfully");
                 navigate("/workers");
@@ -78,10 +78,10 @@ const EditWorker = () => {
     };
     const verifyPassword = async () => {
         try {
-            const { data } = await axios.post(
-                `http://localhost:4000/api/user/verify-password`,
-                { id: ctx.user.id, password }
-            );
+            const { data } = await axios.post(`${baseUrl}/api/user/verify-password`, {
+                id: ctx.user.id,
+                password,
+            });
             if (!data.error) {
                 setOpen(false);
                 submitData();
@@ -93,11 +93,9 @@ const EditWorker = () => {
         }
     };
     return (
-        <div className="w-full flex-center flex-col">
+        <PageAnimation className="w-full flex-center flex-col">
             <div className="h-full flex-center flex-col">
-                <h1 className="text-slate-100 text-3xl font-semibold my-5">
-                    Edit User
-                </h1>
+                <h1 className="text-slate-100 text-3xl font-semibold my-5">Edit User</h1>
                 <div className="flex h-[350px] bg-[#1f2a40] px-9 rounded-md shadow-lg justify-center">
                     <div className="flex flex-col justify-evenly items-end pr-5 text-slate-100">
                         <p>Name: </p>
@@ -208,11 +206,7 @@ const EditWorker = () => {
                 footer={[
                     <div className="flex-center" key="footer">
                         <div>
-                            <button
-                                key="submit"
-                                className="custom-button"
-                                onClick={verifyPassword}
-                            >
+                            <button key="submit" className="custom-button" onClick={verifyPassword}>
                                 Verify
                             </button>
                         </div>
@@ -232,7 +226,7 @@ const EditWorker = () => {
                     />
                 </div>
             </Modal>
-        </div>
+        </PageAnimation>
     );
 };
 

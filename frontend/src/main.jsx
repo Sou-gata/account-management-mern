@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import { RouterProvider } from "react-router-dom";
-import router from "../Routes.jsx";
+import Routes from "../Routes";
 import { ConfigProvider } from "antd";
 import ContextProvider from "./context/UserContext";
+import { BrowserRouter, Routes as DomRoutes } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
@@ -39,7 +39,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     },
                 }}
             >
-                <RouterProvider router={router} />
+                <BrowserRouter>
+                    <Routes />
+                </BrowserRouter>
             </ConfigProvider>
         </ContextProvider>
     </React.StrictMode>
