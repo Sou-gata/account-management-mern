@@ -1,8 +1,4 @@
-import {
-    BsFuelPumpDieselFill,
-    BsGiftFill,
-    BsFillClipboardDataFill,
-} from "react-icons/bs";
+import { BsFuelPumpDieselFill, BsGiftFill, BsFillClipboardDataFill } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
 import { GiNotebook } from "react-icons/gi";
 import { Menu } from "antd";

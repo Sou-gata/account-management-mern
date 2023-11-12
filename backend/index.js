@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Server is running on http://localhost:${port}\n`);
 });
 app.use(express.static(path.resolve(__dirname, "ui")));
 app.use("/api/user", require("./routers/userRouter"));

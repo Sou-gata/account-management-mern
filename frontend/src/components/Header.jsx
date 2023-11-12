@@ -1,10 +1,11 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { Context } from "../context/UserContext";
 import { Modal, Dropdown } from "antd";
 import axios from "axios";
 import toast from "../utils";
 import { Link } from "react-router-dom";
 import baseUrl from "../../baseUrl";
+import { motion } from "framer-motion";
 
 const Header = () => {
     const { user, setUser } = useContext(Context);
@@ -13,6 +14,7 @@ const Header = () => {
         mobile: "",
         password: "",
     });
+    const [hovered, setHovered] = useState(false);
     const logout = () => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
@@ -20,10 +22,7 @@ const Header = () => {
     };
     const login = async () => {
         try {
-            const { data } = await axios.post(
-                `${baseUrl}/api/user/login`,
-                details
-            );
+            const { data } = await axios.post(`${baseUrl}/api/user/login`, details);
             if (!data.error) {
                 localStorage.setItem(
                     "user",
@@ -53,21 +52,86 @@ const Header = () => {
             toast("error", error.message);
         }
     };
+    const variants = {
+        hover: {
+            scale: [1, 1.5, 1],
+        },
+        initial: {
+            scale: 1,
+        },
+    };
+    const appName = [
+        {
+            label: "D",
+            color: "#70d8bd",
+        },
+        {
+            label: "o",
+        },
+        {
+            label: "o",
+        },
+        {
+            label: "r",
+        },
+        {
+            label: " ",
+        },
+        {
+            label: "T",
+            color: "#70d8bd",
+        },
+        {
+            label: "o",
+        },
+        {
+            label: " ",
+        },
+        {
+            label: "D",
+            color: "#70d8bd",
+        },
+        {
+            label: "o",
+        },
+        {
+            label: "o",
+        },
+        {
+            label: "r",
+        },
+    ];
     return (
         <>
             <div className="bg-[#001529] px-6 h-16 w-full flex items-center justify-between sticky top-0 right-0 z-50">
-                <Link to="/" className="text-slate-100 font-semibold text-3xl">
-                    <span className="text-[#70d8bd]">D</span>oor{" "}
-                    <span className="text-[#70d8bd]">T</span>o{" "}
-                    <span className="text-[#70d8bd]">D</span>oor{" "}
-                </Link>
+                <motion.div
+                    onMouseEnter={() => setHovered(true)}
+                    onMouseLeave={() => setHovered(false)}
+                    className="cursor-pointer"
+                >
+                    <Link to="/" className="text-slate-100 font-semibold text-3xl flex gap-1">
+                        {appName.map((item, index) => (
+                            <motion.p
+                                variants={variants}
+                                animate={hovered ? "hover" : "initial"}
+                                key={index}
+                                className={`${
+                                    item.color ? "text-[" + item.color + "]" : ""
+                                } cursor-pointer`}
+                                transition={{
+                                    delay: 0.075 * index,
+                                    type: "tween",
+                                }}
+                            >
+                                {item.label}
+                            </motion.p>
+                        ))}
+                    </Link>
+                </motion.div>
                 <ul className="flex-center gap-5">
                     {!user?.admin && (
                         <li>
-                            <button
-                                className="custom-button"
-                                onClick={() => setOpen(true)}
-                            >
+                            <button className="custom-button" onClick={() => setOpen(true)}>
                                 Login
                             </button>
                         </li>
@@ -101,9 +165,7 @@ const Header = () => {
                                         ],
                                     }}
                                 >
-                                    <p className="cursor-pointer">
-                                        {user?.name}
-                                    </p>
+                                    <p className="cursor-pointer">{user?.name}</p>
                                 </Dropdown>
                             </li>
                         </>
@@ -123,11 +185,7 @@ const Header = () => {
                 footer={[
                     <div className="flex-center" key="footer">
                         <div>
-                            <button
-                                key="submit"
-                                className="custom-button"
-                                onClick={login}
-                            >
+                            <button key="submit" className="custom-button" onClick={login}>
                                 Login
                             </button>
                         </div>
@@ -135,26 +193,20 @@ const Header = () => {
                 ]}
             >
                 <div className="flex-center flex-col">
-                    <p className="text-2xl font-semibold text-[#70d8bd]">
-                        Login
-                    </p>
+                    <p className="text-2xl font-semibold text-[#70d8bd]">Login</p>
                     <input
                         placeholder="Mobile no"
                         type="number"
                         className="custom-input mt-4"
                         value={details.mobile}
-                        onChange={(e) =>
-                            setDetails({ ...details, mobile: e.target.value })
-                        }
+                        onChange={(e) => setDetails({ ...details, mobile: e.target.value })}
                     />
                     <input
                         placeholder="Password"
                         type="password"
                         className="custom-input my-4"
                         value={details.password}
-                        onChange={(e) =>
-                            setDetails({ ...details, password: e.target.value })
-                        }
+                        onChange={(e) => setDetails({ ...details, password: e.target.value })}
                     />
                 </div>
             </Modal>

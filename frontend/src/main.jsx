@@ -4,7 +4,7 @@ import "./index.css";
 import Routes from "../Routes";
 import { ConfigProvider } from "antd";
 import ContextProvider from "./context/UserContext";
-import { BrowserRouter, Routes as DomRoutes } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
@@ -19,7 +19,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                             darkItemSelectedColor: "#70d8bd",
                             darkItemSelectedBg: "#70d8bd40",
                             darkItemColor: "#ffffff",
-                            darkItemHoverColor: "#a3a3a3",
+                            darkSubMenuItemBg: " #00000025",
+                            darkItemHoverBg: "#70d8bd40",
                         },
                         Table: {
                             headerBg: "#2da58a",

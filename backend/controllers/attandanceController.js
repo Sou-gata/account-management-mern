@@ -106,6 +106,15 @@ async function getYearAttandance(req, res) {
         res.json({ message: error.message, error: true });
     }
 }
+async function deleteAttandance(req, res) {
+    try {
+        const { id } = req.params;
+        const deleted = await Attandance.findByIdAndDelete(id);
+        res.json(deleted);
+    } catch (error) {
+        res.json({ message: error.message, error: true });
+    }
+}
 
 module.exports = {
     addAttandance,
@@ -113,4 +122,5 @@ module.exports = {
     getDayAttandance,
     getMonthAttandance,
     getYearAttandance,
+    deleteAttandance,
 };

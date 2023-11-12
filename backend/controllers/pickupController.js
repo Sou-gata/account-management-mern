@@ -23,11 +23,12 @@ async function addPickup(req, res) {
             let b = [...exist[0].users];
             for (let i = 0; i < a.length; i++) {
                 for (let j = 0; j < b.length; j++) {
-                    if (a[i].userId === b[j].userId.toString()) {
+                    if (a[i].userId === b[j].userId?.toString()) {
                         a[i].delivered = b[j].delivered;
                         a[i].cost = b[j].cost;
                         a[i].cash = b[j].cash;
                         a[i].online = b[j].online;
+                        a[i].pickup = b[j].pickup;
                     }
                 }
             }
@@ -218,7 +219,7 @@ async function getIndividualCash(req, res) {
         if (user.length > 0) {
             user.forEach((item) => {
                 item.users.forEach((user) => {
-                    if (user.userId.toString() === id) {
+                    if (user.userId?.toString() === id) {
                         users.push({
                             ...user._doc,
                             date: item.date,
@@ -234,6 +235,16 @@ async function getIndividualCash(req, res) {
     }
 }
 
+async function deleteDelevary(req, res) {
+    try {
+        let { id } = req.params;
+        let details = await Pickup.findByIdAndDelete(id);
+        res.json(details);
+    } catch (error) {
+        res.json({ error: true, message: error.message });
+    }
+}
+
 module.exports = {
     addPickup,
     getPickup,
@@ -241,4 +252,5 @@ module.exports = {
     getDelivery,
     getDashboardDetails,
     getIndividualCash,
+    deleteDelevary,
 };

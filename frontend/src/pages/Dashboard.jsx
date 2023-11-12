@@ -11,7 +11,7 @@ const Dashboard = () => {
     const [dashboard, setDashboard] = useState([]);
     const { user } = useContext(Context);
     const [date, setDate] = useState(new Date());
-    const [type, setType] = useState("month");
+    const [type, setType] = useState("last");
 
     let month = [
         "January",

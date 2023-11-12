@@ -7,6 +7,7 @@ const {
     getDelivery,
     getDashboardDetails,
     getIndividualCash,
+    deleteDelevary,
 } = require("../controllers/pickupController");
 
 router.post("/add", addPickup);
@@ -15,5 +16,6 @@ router.post("/add-delivery", addDelivery);
 router.post("/get-delivery", getDelivery);
 router.post("/get-dashboard", getDashboardDetails);
 router.post("/individual", getIndividualCash);
+router.delete("/:id", deleteDelevary);
 
 module.exports = router;

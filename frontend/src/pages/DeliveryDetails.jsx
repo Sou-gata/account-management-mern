@@ -52,24 +52,14 @@ const DeliveryDetails = () => {
         fetchData();
     }, [date]);
     const handleChange = (e, type) => {
-        if (type === "delivered") {
-            setWorkerData({
-                ...workerData,
-                [e.target.name]: {
-                    ...workerData[e.target.name],
-                    delivered: parseFloat(e.target.value),
-                    id: e.target.id,
-                },
-            });
-        } else {
-            setWorkerData({
-                ...workerData,
-                [e.target.name]: {
-                    ...workerData[e.target.name],
-                    [type]: parseFloat(e.target.value),
-                },
-            });
-        }
+        setWorkerData({
+            ...workerData,
+            [e.target.name]: {
+                ...workerData[e.target.name],
+                [type]: parseFloat(e.target.value).toString(),
+                id: e.target.id,
+            },
+        });
     };
 
     const handleSave = async () => {
@@ -204,6 +194,7 @@ const DeliveryDetails = () => {
                                             type="number"
                                             name={item.name}
                                             className="custom-input w-[100px]"
+                                            id={item.userId}
                                             onChange={(e) => handleChange(e, "cost")}
                                             value={workerData[item.name]?.cost || ""}
                                         />
@@ -213,6 +204,7 @@ const DeliveryDetails = () => {
                                             type="number"
                                             name={item.name}
                                             className="custom-input w-[100px]"
+                                            id={item.userId}
                                             onChange={(e) => handleChange(e, "cash")}
                                             value={workerData[item.name]?.cash || ""}
                                         />
@@ -222,6 +214,7 @@ const DeliveryDetails = () => {
                                             type="number"
                                             name={item.name}
                                             className="custom-input w-[100px]"
+                                            id={item.userId}
                                             onChange={(e) => handleChange(e, "online")}
                                             value={workerData[item.name]?.online || ""}
                                         />
@@ -230,11 +223,13 @@ const DeliveryDetails = () => {
                             ))}
                         </tbody>
                     </table>
-                    <div>
-                        <button onClick={() => handleSave()} className="custom-button mt-5">
-                            Save
-                        </button>
-                    </div>
+                    {pickup?.users?.length > 0 && (
+                        <div>
+                            <button onClick={() => handleSave()} className="custom-button mt-5">
+                                Save
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </PageAnimation>

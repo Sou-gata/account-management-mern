@@ -54,5 +54,14 @@ async function viewFuelDetails(req, res) {
         res.json({ error: true, message: error.message });
     }
 }
+async function deleteFuelDetails(req, res) {
+    try {
+        let { id } = req.params;
+        let user = await Fuel.findByIdAndDelete(id);
+        res.json(user);
+    } catch (error) {
+        res.json({ error: true, message: error.message });
+    }
+}
 
-module.exports = { addFuelDetails, viewFuelDetails };
+module.exports = { addFuelDetails, viewFuelDetails, deleteFuelDetails };

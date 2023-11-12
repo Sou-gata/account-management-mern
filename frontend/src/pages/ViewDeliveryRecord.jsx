@@ -1,15 +1,18 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { DatePicker } from "antd";
+import { DatePicker, Modal } from "antd";
 import toast, { dateToString } from "../utils";
 import Popup from "../components/Popup";
 import baseUrl from "../../baseUrl";
 import PageAnimation from "../components/PageAnimation";
+import { BsTrash3Fill } from "react-icons/bs";
 
 const ViewDeliveryRecord = () => {
     let today = new Date();
     const [date, setDate] = useState([new Date(today.getFullYear(), today.getMonth(), 1), today]);
     const [data, setData] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedId, setSelectedId] = useState("");
     const onChangeDate = (value) => {
         if (!value) {
             return;
@@ -18,18 +21,35 @@ const ViewDeliveryRecord = () => {
         let d2 = value[1].$d;
         setDate([d1, d2]);
     };
+    const fetchData = async () => {
+        try {
+            let res = await axios.post(`${baseUrl}/api/pickup/get-delivery`, { date });
+            res = res.data;
+            setData(res);
+        } catch (error) {
+            toast("error", error.message);
+        }
+    };
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                let res = await axios.post(`${baseUrl}/api/pickup/get-delivery`, { date });
-                res = res.data;
-                setData(res);
-            } catch (error) {
-                toast("error", error.message);
-            }
-        };
         fetchData();
     }, [date]);
+    const openModel = (id) => {
+        setIsModalOpen(true);
+        setSelectedId(id);
+    };
+    const deleteHandler = async () => {
+        try {
+            let res = await axios.delete(`${baseUrl}/api/pickup/${selectedId}`);
+            if (!res.data.error) {
+                toast("success", "Data deleted successfully...");
+                fetchData();
+            } else {
+                toast("error", res.data.error);
+            }
+        } catch (error) {
+            toast("error", error.message);
+        }
+    };
     return (
         <PageAnimation>
             <div className="flex-center flex-col gap-5 sticky top-0 left-0 bg-[#141b2d]">
@@ -42,7 +62,7 @@ const ViewDeliveryRecord = () => {
                         {dateToString(date[0])} - {dateToString(date[1])}
                     </p>
                 </div>
-                <table className="text-slate-100 w-full stripped-table border-b-[0.5px]">
+                <table className="text-slate-100 w-full stripped-table">
                     <tbody>
                         <tr>
                             <td className="w-[20%] py-1 text-center font-semibold">Name</td>
@@ -85,12 +105,19 @@ const ViewDeliveryRecord = () => {
                     total.undelivered = total.ofd - total.delivered;
                     return (
                         <div key={item._id}>
-                            <div className="bg-[#2e7c67] text-slate-100 flex-center gap-10">
+                            <div className="bg-[#2e7c67] text-slate-100 flex-center gap-10 rounded-md">
                                 <p className="text-lg font-semibold text-center">
                                     {dateToString(item.date)}
                                 </p>
                                 <div>
                                     <Popup record={item} total={total} />
+                                </div>
+                                <div>
+                                    <BsTrash3Fill
+                                        size={17}
+                                        className="cursor-pointer"
+                                        onClick={() => openModel(item._id)}
+                                    />
                                 </div>
                             </div>
                             <div>
@@ -143,6 +170,27 @@ const ViewDeliveryRecord = () => {
                     );
                 })}
             </div>
+            <Modal
+                title="Confirmation"
+                open={isModalOpen}
+                onOk={() => {
+                    setIsModalOpen(false);
+                    deleteHandler();
+                }}
+                onCancel={() => {
+                    setIsModalOpen(false);
+                }}
+                okButtonProps={{ style: { background: "#bb2d3b" } }}
+                cancelButtonProps={{
+                    style: {
+                        background: "#3da58a",
+                        color: "#fff",
+                        border: "none",
+                    },
+                }}
+            >
+                <p className="text-slate-100 text-xl">Are you sure you want to delete ?</p>
+            </Modal>
         </PageAnimation>
     );
 };

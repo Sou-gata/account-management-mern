@@ -5,6 +5,7 @@ import toast, { dateToString } from "../utils";
 import Popup from "../components/Popup";
 import baseUrl from "../../baseUrl";
 import PageAnimation from "../components/PageAnimation";
+import { BsTrash3Fill } from "react-icons/bs";
 
 const ViewFuelRecord = () => {
     let today = new Date();
@@ -12,6 +13,8 @@ const ViewFuelRecord = () => {
     const [data, setData] = useState([]);
     const [details, setDetails] = useState([]);
     const [rate, setRate] = useState(12);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedId, setSelectedId] = useState("");
 
     const [open, setOpen] = useState(false);
     const showModal = () => {
@@ -76,7 +79,23 @@ const ViewFuelRecord = () => {
         }
         setDetails(users);
     };
-
+    const deleteHandler = async () => {
+        try {
+            let res = await axios.delete(`${baseUrl}/api/fuel/${selectedId}`);
+            if (!res.data.error) {
+                toast("success", "Data deleted successfully...");
+                fetchData();
+            } else {
+                toast("error", res.data.error);
+            }
+        } catch (error) {
+            toast("error", error.message);
+        }
+    };
+    const openModel = (id) => {
+        setIsModalOpen(true);
+        setSelectedId(id);
+    };
     return (
         <PageAnimation>
             <div className="flex-center flex-col bg-[#141b2d] gap-5 sticky -top-12 left-0">
@@ -107,16 +126,21 @@ const ViewFuelRecord = () => {
                     </tbody>
                 </table>
             </div>
-            <div>
+            <div className="px-4">
                 {data.map((item) => (
                     <div key={item._id}>
-                        <div className="bg-[#2e7c67] text-slate-100 flex-center gap-10">
+                        <div className="bg-[#2e7c67] text-slate-100 flex-center gap-10 rounded-md">
                             <p className="text-lg font-semibold text-center">
                                 {dateToString(item.date)}
                             </p>
                             <div>
                                 <Popup record={item} />
                             </div>
+                            <BsTrash3Fill
+                                size={17}
+                                className="cursor-pointer"
+                                onClick={() => openModel(item._id)}
+                            />
                         </div>
                         <div>
                             <table className="w-full stripped-table">
@@ -182,6 +206,27 @@ const ViewFuelRecord = () => {
                         </tbody>
                     </table>
                 </div>
+            </Modal>
+            <Modal
+                title="Confirmation"
+                open={isModalOpen}
+                onOk={() => {
+                    setIsModalOpen(false);
+                    deleteHandler();
+                }}
+                onCancel={() => {
+                    setIsModalOpen(false);
+                }}
+                okButtonProps={{ style: { background: "#bb2d3b" } }}
+                cancelButtonProps={{
+                    style: {
+                        background: "#3da58a",
+                        color: "#fff",
+                        border: "none",
+                    },
+                }}
+            >
+                <p className="text-slate-100 text-xl">Are you sure you want to delete ?</p>
             </Modal>
         </PageAnimation>
     );

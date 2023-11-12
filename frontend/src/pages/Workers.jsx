@@ -1,5 +1,5 @@
 import { Table, Modal, Tag } from "antd";
-import { BsFillTrashFill } from "react-icons/bs";
+import { BsTrash3Fill } from "react-icons/bs";
 import { AiOutlineEdit, AiOutlineUserAdd } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -124,7 +124,7 @@ const Workers = () => {
                         }}
                         className="btn del-btn"
                     >
-                        <BsFillTrashFill />
+                        <BsTrash3Fill />
                     </button>
                 </div>
             ),
@@ -147,7 +147,7 @@ const Workers = () => {
             <Modal
                 title="Confirmation"
                 open={isModalOpen}
-                onOk={(e) => {
+                onOk={() => {
                     setIsModalOpen(false);
                     deleteHandler();
                 }}

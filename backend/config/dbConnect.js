@@ -6,7 +6,14 @@ const dbConnect = async () => {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
-        console.log("db connected");
+        console.log(
+            "db name: ",
+            res.connection.name,
+            "\nhost: ",
+            res.connection.host,
+            "\nport: ",
+            res.connection.port
+        );
     } catch (err) {
         console.log(err);
     }
