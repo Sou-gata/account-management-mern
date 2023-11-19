@@ -4,7 +4,7 @@ import { AiOutlineEdit, AiOutlineUserAdd } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState, useContext } from "react";
-import toast from "../utils";
+import toast, { config } from "../utils";
 import { Context } from "../context/UserContext";
 import Popup from "../components/Popup";
 import baseUrl from "../../baseUrl";
@@ -55,7 +55,7 @@ const Workers = () => {
             return;
         }
         try {
-            const { data } = await axios.delete(`${baseUrl}/api/user/delete/${id}`);
+            const { data } = await axios.delete(`${baseUrl}/api/user/delete/${id}`, config);
             if (!data.error) {
                 toast("success", "Worker deleted successfully");
             } else {

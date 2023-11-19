@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { DatePicker } from "antd";
-import toast, { dateToString } from "../utils";
+import toast, { config, dateToString } from "../utils";
 import { Context } from "../context/UserContext";
 import baseUrl from "../../baseUrl";
 import PageAnimation from "../components/PageAnimation";
@@ -102,7 +102,7 @@ const DeliveryDetails = () => {
             uid: user.id,
         };
         try {
-            let data = await axios.post(`${baseUrl}/api/pickup/add-delivery`, dataOfDate);
+            let data = await axios.post(`${baseUrl}/api/pickup/add-delivery`, dataOfDate, config);
             data = data.data;
             if (!data.error) {
                 setWorkerData({});

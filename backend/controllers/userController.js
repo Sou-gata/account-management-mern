@@ -178,8 +178,6 @@ const verifyToken = async (req, res) => {
                     admin: user.isAdmin,
                     name: user.name,
                     mobile: user.mobile,
-                    createdBy: user.createdBy,
-                    updatedBy: user.updatedBy,
                     token,
                 });
             } else {

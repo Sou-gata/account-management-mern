@@ -13,32 +13,21 @@ const Layout = () => {
     const { setUser } = useContext(Context);
     useEffect(() => {
         (async () => {
-            let token = localStorage.getItem("token");
-            if (token) {
+            let user = localStorage.getItem("user");
+            let token = "";
+            if (user) {
+                token = JSON.parse(user).token;
+            }
+            if (token !== "") {
                 let verify = await axios.post(`${baseUrl}/api/user/verify`, {
                     token,
                 });
                 verify = verify.data;
                 if (!verify.error) {
-                    setUser({
-                        id: verify.id,
-                        name: verify.name,
-                        admin: verify.admin,
-                        mobile: verify.mobile,
-                    });
-                    localStorage.setItem(
-                        "user",
-                        JSON.stringify({
-                            id: verify.id,
-                            name: verify.name,
-                            admin: verify.admin,
-                            mobile: verify.mobile,
-                        })
-                    );
-                    localStorage.setItem("token", verify.token);
+                    setUser(verify);
+                    localStorage.setItem("user", JSON.stringify(verify));
                 } else {
                     setUser(null);
-                    localStorage.removeItem("token");
                     localStorage.removeItem("user");
                 }
             }
@@ -51,9 +40,7 @@ const Layout = () => {
                 <div style={{ width: 255 + "px" }}>
                     <LeftSideBar />
                 </div>
-                <div className="main-section">
-                    {pathname === "/" ? <Dashboard /> : <Outlet />}
-                </div>
+                <div className="main-section">{pathname === "/" ? <Dashboard /> : <Outlet />}</div>
             </div>
             <Toaster position="top-right" />
         </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { DatePicker, Select, Modal } from "antd";
 const { Option } = Select;
-import toast, { dateToString } from "../utils";
+import toast, { config, dateToString } from "../utils";
 import Popup from "../components/Popup";
 import baseUrl from "../../baseUrl";
 import PageAnimation from "../components/PageAnimation";
@@ -56,7 +56,7 @@ const ViewAttandance = () => {
     };
     const deleteHandler = async () => {
         try {
-            let res = await axios.delete(`${baseUrl}/api/attandance/${selectedId}`);
+            let res = await axios.delete(`${baseUrl}/api/attandance/${selectedId}`, config);
             if (!res.data.error) {
                 toast("success", "Data deleted successfully...");
                 fetchData(new Date(), "month");

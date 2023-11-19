@@ -17,7 +17,6 @@ const Header = () => {
     const [hovered, setHovered] = useState(false);
     const logout = () => {
         localStorage.removeItem("user");
-        localStorage.removeItem("token");
         setUser(null);
     };
     const login = async () => {
@@ -31,14 +30,15 @@ const Header = () => {
                         name: data.name,
                         admin: data.admin,
                         mobile: data.mobile,
+                        token: data.token,
                     })
                 );
-                localStorage.setItem("token", data.token);
                 setUser({
                     id: data.id,
                     name: data.name,
                     admin: data.admin,
                     mobile: data.mobile,
+                    token: data.token,
                 });
                 setDetails({
                     mobile: "",

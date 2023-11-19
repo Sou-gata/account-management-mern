@@ -5,9 +5,10 @@ const {
     viewFuelDetails,
     deleteFuelDetails,
 } = require("../controllers/fuelController");
+const { isAdmin } = require("../middleware/authMiddleware");
 
-router.post("/add", addFuelDetails);
+router.post("/add", isAdmin, addFuelDetails);
 router.post("/view", viewFuelDetails);
-router.delete("/:id", deleteFuelDetails);
+router.delete("/:id", isAdmin, deleteFuelDetails);
 
 module.exports = router;

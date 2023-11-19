@@ -15,7 +15,7 @@ const dbConnect = async () => {
             res.connection.port
         );
     } catch (err) {
-        console.log(err);
+        console.log("db connection failed :: ", err);
     }
 };
 module.exports = dbConnect;

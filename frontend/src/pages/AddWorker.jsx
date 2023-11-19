@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import toast from "../utils";
+import toast, { config } from "../utils";
 import { Context } from "../context/UserContext";
 import baseUrl from "../../baseUrl";
 import PageAnimation from "../components/PageAnimation";
@@ -26,10 +26,14 @@ const FormDisabledDemo = () => {
     };
     const addData = async () => {
         try {
-            const { data } = await axios.post(`${baseUrl}/api/user/add`, {
-                ...user,
-                id: ctx.user.id,
-            });
+            const { data } = await axios.post(
+                `${baseUrl}/api/user/add`,
+                {
+                    ...user,
+                    id: ctx.user.id,
+                },
+                config
+            );
             if (!data.error) {
                 toast("success", "Worker added successfully");
                 navigate("/workers");

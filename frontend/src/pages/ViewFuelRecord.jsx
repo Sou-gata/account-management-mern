@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { DatePicker, Modal } from "antd";
-import toast, { dateToString } from "../utils";
+import toast, { config, dateToString } from "../utils";
 import Popup from "../components/Popup";
 import baseUrl from "../../baseUrl";
 import PageAnimation from "../components/PageAnimation";
@@ -81,7 +81,7 @@ const ViewFuelRecord = () => {
     };
     const deleteHandler = async () => {
         try {
-            let res = await axios.delete(`${baseUrl}/api/fuel/${selectedId}`);
+            let res = await axios.delete(`${baseUrl}/api/fuel/${selectedId}`, config);
             if (!res.data.error) {
                 toast("success", "Data deleted successfully...");
                 fetchData();

@@ -12,13 +12,14 @@ const {
     changePassWord,
     verifyPassword,
 } = require("../controllers/userController");
+const { isAdmin } = require("../middleware/authMiddleware");
 
-router.post("/add", addUser);
+router.post("/add", isAdmin, addUser);
 router.get("/all", allUsers);
 router.get("/active", allActiveUsers);
-router.delete("/delete/:id", deleteUser);
+router.delete("/delete/:id", isAdmin, deleteUser);
 router.get("/get/:id", getUser);
-router.put("/update/:id", updateUser);
+router.put("/update/:id", isAdmin, updateUser);
 router.post("/login", login);
 router.post("/verify", verifyToken);
 router.post("/change-password", changePassWord);

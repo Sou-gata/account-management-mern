@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { DatePicker } from "antd";
-import toast, { dateToString } from "../utils";
+import toast, { config, dateToString } from "../utils";
 import { Context } from "../context/UserContext";
 import baseUrl from "../../baseUrl";
 import PageAnimation from "../components/PageAnimation";
@@ -79,11 +79,10 @@ const AddPickupDetails = () => {
             id: user.id,
         };
         try {
-            let res = await axios.post(`${baseUrl}/api/pickup/add`, dataOfDate);
+            let res = await axios.post(`${baseUrl}/api/pickup/add`, dataOfDate, config);
             res = res.data;
             if (!res.error) {
                 toast("success", "Data added successfully");
-                setWorkerData({});
             } else {
                 toast("error", res.message);
             }

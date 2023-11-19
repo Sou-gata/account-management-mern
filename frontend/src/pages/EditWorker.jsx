@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Modal } from "antd";
-import toast from "../utils";
+import toast, { config } from "../utils";
 import { Context } from "../context/UserContext";
 import baseUrl from "../../baseUrl";
 import PageAnimation from "../components/PageAnimation";
@@ -43,10 +43,14 @@ const EditWorker = () => {
     };
     const submitData = async () => {
         try {
-            const { data } = await axios.put(`${baseUrl}/api/user/update/${id}`, {
-                ...user,
-                uid: ctx.user.id,
-            });
+            const { data } = await axios.put(
+                `${baseUrl}/api/user/update/${id}`,
+                {
+                    ...user,
+                    uid: ctx.user.id,
+                },
+                config
+            );
             if (!data.error) {
                 toast("success", "Data updated successfully");
                 navigate("/workers");

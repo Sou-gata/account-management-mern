@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Table, DatePicker } from "antd";
-import toast, { dateToString } from "../utils";
+import toast, { config, dateToString } from "../utils";
 import { Context } from "../context/UserContext";
 import baseUrl from "../../baseUrl";
 import PageAnimation from "../components/PageAnimation";
@@ -69,11 +69,15 @@ const AddAttandance = () => {
             toast("error", "You are not authorized to add attandance");
         } else {
             try {
-                const { data } = await axios.post(`${baseUrl}/api/attandance/add`, {
-                    users,
-                    date,
-                    id: user.id,
-                });
+                const { data } = await axios.post(
+                    `${baseUrl}/api/attandance/add`,
+                    {
+                        users,
+                        date,
+                        id: user.id,
+                    },
+                    config
+                );
                 if (!data.error) {
                     toast("success", "Attandance added successfully");
                 } else {

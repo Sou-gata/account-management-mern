@@ -57,3 +57,11 @@ export const dateToTimeString = (date) => {
     if (isNaN(year)) return "";
     return `${pad(day)}/${pad(month)}/${year}  ${pad(hour)}:${pad(minute)} ${meridian}`;
 };
+
+const token = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).token : "";
+export const config = {
+    headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+    },
+};

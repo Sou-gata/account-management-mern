@@ -40,13 +40,13 @@ const ViewIndividualCash = () => {
             } else {
                 let tempTotal = { ...empty };
                 res.data.forEach((element) => {
-                    tempTotal.OFD += element.ofd;
-                    tempTotal.delivered += element.delivered;
-                    tempTotal.OFP += element.ofp;
-                    tempTotal.pickup += element.pickup;
-                    tempTotal.cost += element.cost;
-                    tempTotal.online += element.online;
-                    tempTotal.cash += element.cash;
+                    tempTotal.OFD += element.ofd || 0;
+                    tempTotal.delivered += element.delivered || 0;
+                    tempTotal.OFP += element.ofp || 0;
+                    tempTotal.pickup += element.pickup || 0;
+                    tempTotal.cost += element.cost || 0;
+                    tempTotal.online += element.online || 0;
+                    tempTotal.cash += element.cash || 0;
                 });
                 tempTotal.due = tempTotal.cost - tempTotal.online - tempTotal.cash;
                 setTotal(tempTotal);
